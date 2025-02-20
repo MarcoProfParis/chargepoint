@@ -49,7 +49,7 @@
                </soapenv:Body>
             </soapenv:Envelope>`;
 
-            axios.post('https://na.chargepoint.com/webservices/2_0', xmlbody, {
+            axios.post('https://na.chargepoint.com/webservices/5_0', xmlbody, {
                 headers: {
                     'Content-Type': 'text/xml; charset=utf-8',
                     'SOAPAction': 'urn:dictionary:com.chargepoint.webservices/getPublicStations'
