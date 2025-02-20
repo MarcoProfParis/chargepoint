@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChargePoint API Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>ChargePoint API Results</h1>
+    <button id="fetchData">Fetch Data</button>
+    <h2>Response:</h2>
+    <pre id="response"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('fetchData').addEventListener('click', function() {
+            const xmlbody = `
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:urn="urn:dictionary:com.chargepoint.webservices">
+               <soapenv:Header>
+                  <wsse:Security soapenv:mustUnderstand="1">
+                     <wsse:UsernameToken>
+                        <wsse:Username>70743d9b580b967c194d1ee81eadfe0e67b4e1727f1701739907442</wsse:Username>
+                        <wsse:Password Type="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText">e945eb72918dd00d036e9eb7925442f5</wsse:Password>
+                     </wsse:UsernameToken>
+                  </wsse:Security>
+               </soapenv:Header>
+               <soapenv:Body>
+                  <urn:getPublicStations>
+                     <searchQuery>
+                        <Address>1692 Dell Avenue</Address>
+                        <City>Campbell</City>
+                        <State>CA</State>
+                        <PostalCode>95008</PostalCode>
+                        <Proximity>1</Proximity>
+                        <ProximityUnit>Mi</ProximityUnit>
+                     </searchQuery>
+                  </urn:getPublicStations>
+               </soapenv:Body>
+            </soapenv:Envelope>`;
+
+            axios.post('https://na.chargepoint.com/webservices/2_0', xmlbody, {
+                headers: {
+                    'Content-Type': 'text/xml; charset=utf-8',
+                    'SOAPAction': 'urn:dictionary:com.chargepoint.webservices/getPublicStations'
+                }
+            })
+            .then(response => {
+                document.getElementById('response').textContent = response.data;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').textContent = 'Error: ' + error.message;
+            });
+        });
+    </script>
+</body>
+</html>
